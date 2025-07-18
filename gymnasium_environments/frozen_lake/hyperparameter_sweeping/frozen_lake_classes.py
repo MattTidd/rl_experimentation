@@ -202,7 +202,7 @@ class GLIE_MC_Agent:
         
         ####################### EVALUATION #######################
         # average return per episode:
-        def average_return(self, agent, num_episodes):
+        def average_return(self, num_episodes):
                 """ 
                 this function computes the average return per episode for a given amount of episodes
 
@@ -216,14 +216,14 @@ class GLIE_MC_Agent:
 
                 # for every episode:
                 for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-                        obs, _ = agent.env.reset()      # must reset before an episode
+                        obs, _ = self.env.reset()      # must reset before an episode
                         done = False                    # flag is set to False initially
                         episode_return = 0              # reset return for the episode
 
                         # while False:
                         while not done:
-                                a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                                obs, r, term, trunc, _ = agent.env.step(a)      # step that action
+                                a = np.argmax(self.Q[obs])                     # pick best action from policy
+                                obs, r, term, trunc, _ = self.env.step(a)      # step that action
                                 episode_return += r     # increment the episode return by that return
                                 done = term or trunc    # set to True if term or trunc
                         
@@ -232,7 +232,7 @@ class GLIE_MC_Agent:
                 return round(total_return / num_episodes, 3)      # average return accross all episodes
         
         # success rate:
-        def success_rate(self, agent, num_episodes):
+        def success_rate(self, num_episodes):
                 """ 
                 this function computes the success rate for a given amount of episodes
 
@@ -246,13 +246,13 @@ class GLIE_MC_Agent:
 
                 # for every episode:
                 for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-                        obs, _ = agent.env.reset()      # must reset before an episode
+                        obs, _ = self.env.reset()      # must reset before an episode
                         done = False                    # flag is set to False initially
 
                         # while False:
                         while not done:
-                                a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                                obs, r, term, trunc, _ = agent.env.step(a)      # step that action
+                                a = np.argmax(self.Q[obs])                     # pick best action from policy
+                                obs, r, term, trunc, _ = self.env.step(a)      # step that action
                                 done = term or trunc    # set to True if term or trunc
 
                         # if at the goal pose
@@ -262,7 +262,7 @@ class GLIE_MC_Agent:
                 return round((success / num_episodes) * 100, 3)   # return success rate
         
         # average episode length:
-        def average_length(self, agent, num_episodes):
+        def average_length(self, num_episodes):
                 """ 
                 this function computes the average episode length for a given amount of episodes
 
@@ -276,14 +276,14 @@ class GLIE_MC_Agent:
                 
                 # for every episode:
                 for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-                        obs, _ = agent.env.reset()      # must reset before an episode
+                        obs, _ = self.env.reset()      # must reset before an episode
                         done = False                    # flag is set to False initially
                         episode_steps = 0               # reset steps for the episode
 
                         # while False:
                         while not done:
-                                a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                                obs, _, term, trunc, _ = agent.env.step(a)      # step that action
+                                a = np.argmax(self.Q[obs])                     # pick best action from policy
+                                obs, _, term, trunc, _ = self.env.step(a)      # step that action
                                 episode_steps += 1                              # increment episode steps
 
                                 done = term or trunc    # set to True if term or trunc
@@ -466,7 +466,7 @@ class SARSA_0_Agent:
 
     ####################### EVALUATION #######################
     # average return per episode:
-    def average_return(self, agent, num_episodes):
+    def average_return(self, num_episodes):
             """ 
             this function computes the average return per episode for a given amount of episodes
 
@@ -480,14 +480,14 @@ class SARSA_0_Agent:
 
             # for every episode:
             for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-                    obs, _ = agent.env.reset()      # must reset before an episode
+                    obs, _ = self.env.reset()      # must reset before an episode
                     done = False                    # flag is set to False initially
                     episode_return = 0              # reset return for the episode
 
                     # while False:
                     while not done:
-                            a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                            obs, r, term, trunc, _ = agent.env.step(a)      # step that action
+                            a = np.argmax(self.Q[obs])                     # pick best action from policy
+                            obs, r, term, trunc, _ = self.env.step(a)      # step that action
                             episode_return += r     # increment the episode return by that return
                             done = term or trunc    # set to True if term or trunc
                     
@@ -496,7 +496,7 @@ class SARSA_0_Agent:
             return round(total_return / num_episodes, 3)      # average return accross all episodes
     
     # success rate:
-    def success_rate(self, agent, num_episodes):
+    def success_rate(self, num_episodes):
             """ 
             this function computes the success rate for a given amount of episodes
 
@@ -510,13 +510,13 @@ class SARSA_0_Agent:
 
             # for every episode:
             for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-                    obs, _ = agent.env.reset()      # must reset before an episode
+                    obs, _ = self.env.reset()      # must reset before an episode
                     done = False                    # flag is set to False initially
 
                     # while False:
                     while not done:
-                            a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                            obs, r, term, trunc, _ = agent.env.step(a)      # step that action
+                            a = np.argmax(self.Q[obs])                     # pick best action from policy
+                            obs, r, term, trunc, _ = self.env.step(a)      # step that action
                             done = term or trunc    # set to True if term or trunc
 
                     # if at the goal pose
@@ -525,10 +525,8 @@ class SARSA_0_Agent:
 
             return round((success / num_episodes) * 100, 3)   # return success rate
     
-            # average episode length:
-    
     # average episode length:
-    def average_length(self, agent, num_episodes):
+    def average_length(self, num_episodes):
         """ 
         this function computes the average episode length for a given amount of episodes
 
@@ -542,14 +540,14 @@ class SARSA_0_Agent:
         
         # for every episode:
         for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-                obs, _ = agent.env.reset()      # must reset before an episode
+                obs, _ = self.env.reset()      # must reset before an episode
                 done = False                    # flag is set to False initially
                 episode_steps = 0               # reset steps for the episode
 
                 # while False:
                 while not done:
-                        a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                        obs, _, term, trunc, _ = agent.env.step(a)      # step that action
+                        a = np.argmax(self.Q[obs])                     # pick best action from policy
+                        obs, _, term, trunc, _ = self.env.step(a)      # step that action
                         episode_steps += 1                              # increment episode steps
 
                         done = term or trunc    # set to True if term or trunc
@@ -749,7 +747,7 @@ class SARSA_L_Agent:
 
     ####################### EVALUATION #######################
     # average return per episode:
-    def average_return(self, agent, num_episodes):
+    def average_return(self, num_episodes):
         """ 
         this function computes the average return per episode for a given amount of episodes
 
@@ -763,14 +761,14 @@ class SARSA_L_Agent:
 
         # for every episode:
         for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-            obs, _ = agent.env.reset()      # must reset before an episode
+            obs, _ = self.env.reset()      # must reset before an episode
             done = False                    # flag is set to False initially
             episode_return = 0              # reset return for the episode
 
             # while False:
             while not done:
-                a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                obs, r, term, trunc, _ = agent.env.step(a)      # step that action
+                a = np.argmax(self.Q[obs])                     # pick best action from policy
+                obs, r, term, trunc, _ = self.env.step(a)      # step that action
                 episode_return += r     # increment the episode return by that return
                 done = term or trunc    # set to True if term or trunc
 
@@ -779,7 +777,7 @@ class SARSA_L_Agent:
         return round(total_return / num_episodes, 3)      # average return accross all episodes
 
     # success rate:
-    def success_rate(self, agent, num_episodes):
+    def success_rate(self, num_episodes):
         """ 
         this function computes the success rate for a given amount of episodes
 
@@ -793,13 +791,13 @@ class SARSA_L_Agent:
 
         # for every episode:
         for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-            obs, _ = agent.env.reset()      # must reset before an episode
+            obs, _ = self.env.reset()      # must reset before an episode
             done = False                    # flag is set to False initially
 
             # while False:
             while not done:
-                a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                obs, r, term, trunc, _ = agent.env.step(a)      # step that action
+                a = np.argmax(self.Q[obs])                     # pick best action from policy
+                obs, r, term, trunc, _ = self.env.step(a)      # step that action
                 done = term or trunc    # set to True if term or trunc
 
             # if at the goal pose
@@ -809,7 +807,7 @@ class SARSA_L_Agent:
         return round((success / num_episodes) * 100, 3)   # return success rate
 
     # average episode length:
-    def average_length(self, agent, num_episodes):
+    def average_length(self, num_episodes):
         """ 
         this function computes the average episode length for a given amount of episodes
 
@@ -823,14 +821,14 @@ class SARSA_L_Agent:
 
         # for every episode:
         for _ in tqdm(range(num_episodes), colour = "#33FF00", ncols = 100):
-            obs, _ = agent.env.reset()      # must reset before an episode
+            obs, _ = self.env.reset()      # must reset before an episode
             done = False                    # flag is set to False initially
             episode_steps = 0               # reset steps for the episode
 
             # while False:
             while not done:
-                a = np.argmax(agent.Q[obs])                     # pick best action from policy
-                obs, _, term, trunc, _ = agent.env.step(a)      # step that action
+                a = np.argmax(self.Q[obs])                     # pick best action from policy
+                obs, _, term, trunc, _ = self.env.step(a)      # step that action
                 episode_steps += 1                              # increment episode steps
 
                 done = term or trunc    # set to True if term or trunc
