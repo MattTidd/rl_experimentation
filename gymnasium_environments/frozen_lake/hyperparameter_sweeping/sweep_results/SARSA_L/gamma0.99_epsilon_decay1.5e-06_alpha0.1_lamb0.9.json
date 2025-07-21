@@ -1,0 +1,13 @@
+{
+  "params": {
+    "gamma": 0.99,
+    "epsilon_decay": 1.5e-06,
+    "alpha": 0.1,
+    "lamb": 0.9
+  },
+  "metrics": {
+    "success_rate": 8.7,
+    "avg_return": 0.08,
+    "avg_length": 8.59
+  }
+}
