@@ -1,7 +1,6 @@
 ####################### IMPORTING #######################
 import gymnasium as gym
 import numpy as np
-from tqdm import tqdm 
 import random
 from collections import deque
 
@@ -154,7 +153,7 @@ class DQN_Agent:
         reward_history = np.zeros(training_length)
 
         # for every episode:
-        for episode in tqdm(range(training_length), colour = "#33FF00", ncols = 100, desc = "training progress"):
+        for episode in range(training_length):
             # reset environment:
             obs, _ = self.env.reset()
             episode_reward = 0
