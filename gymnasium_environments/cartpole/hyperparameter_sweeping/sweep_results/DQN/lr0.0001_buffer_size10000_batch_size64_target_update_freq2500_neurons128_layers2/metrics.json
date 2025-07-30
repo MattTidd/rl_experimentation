@@ -1,0 +1,16 @@
+{
+  "params": {
+    "lr": 0.0001,
+    "buffer_size": 10000,
+    "batch_size": 64,
+    "target_update_freq": 2500,
+    "neurons": 128,
+    "layers": 2
+  },
+  "stopped_episode": null,
+  "episode_to_thresh": null,
+  "max_reward": 500.0,
+  "last_mean": 160.12,
+  "last_std": 64.68559035828613,
+  "weights_path": null
+}

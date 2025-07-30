@@ -1,0 +1,16 @@
+{
+  "params": {
+    "lr": 0.0001,
+    "buffer_size": 10000,
+    "batch_size": 32,
+    "target_update_freq": 1000,
+    "neurons": 128,
+    "layers": 2
+  },
+  "stopped_episode": 1384,
+  "episode_to_thresh": null,
+  "max_reward": 500.0,
+  "last_mean": 360.02,
+  "last_std": 175.34976361546657,
+  "weights_path": "sweep_results/DQN\\lr0.0001_buffer_size10000_batch_size32_target_update_freq1000_neurons128_layers2\\model_weights.weights.h5"
+}
