@@ -1,3 +1,4 @@
 venv/
 stashed.text
 testing.ipynb
+__pycache__/
