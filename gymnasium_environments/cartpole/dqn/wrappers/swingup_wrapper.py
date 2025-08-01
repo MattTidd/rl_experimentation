@@ -15,15 +15,15 @@ class SwingUpWrapper(gym.Wrapper):
         # inherit from env:
         super().__init__(env)
 
-        # need to change the observation space to accomodate downwards start:
         # unwrap the TimeLimit wrapper into CartPoleEnv:
         core = self.env.unwrapped
 
-        # set bounds:
-        x_thresh = core.x_threshold
-        inf = np.finfo(np.float32).max
-        low  = np.array([-x_thresh, -inf, -np.pi, -inf], dtype=np.float32)
-        high = np.array([ x_thresh,  inf,  np.pi,  inf], dtype=np.float32)
+        # store threshold for termination condition:
+        self.x_threshold = core.x_threshold
+
+        # need to change the observation space to accomodate downwards start:
+        low  = np.array([-self.x_threshold, -np.inf, -np.pi, -np.inf], dtype=np.float32)
+        high = np.array([ self.x_threshold,  np.inf,  np.pi,  np.inf], dtype=np.float32)
         self.observation_space = spaces.Box(low, high, dtype=np.float32)
 
     # redefine the reset function:
@@ -33,17 +33,15 @@ class SwingUpWrapper(gym.Wrapper):
 
         # unwrap the TimeLimit wrapper into CartPoleEnv:
         core = self.env.unwrapped
-        
-        if core.np_random.uniform() < 0.25:
-            # ocassionally start the cart upright:
-            x, x_dot, theta, theta_dot = np.array([0, 0, 0, 0]) + core.np_random.normal(0, 0.1, size = 4)
-        else:
-            # force pendulum downwards:
-            core = self.env.unwrapped 
-            x, x_dot, theta, theta_dot = np.array([0, 0, np.pi, 0]) + core.np_random.normal(0, 0.1, size = 4)
+
+        # set the start position to pi:
+        state = np.array([0.0, 0.0, np.pi, 0.0], dtype = np.float32)
+
+        # add noise to the initial state:
+        state += core.np_random.normal(0, 0.1, size = 4)
 
         # set the state:
-        core.state = (x, x_dot, theta, theta_dot)
+        core.state = tuple(state)
 
         # rebuild an observation from that state:
         obs = np.array(core.state, dtype = np.float32)
@@ -59,11 +57,17 @@ class SwingUpWrapper(gym.Wrapper):
         # unwrap the TimeLimit wrapper into CartPoleEnv:
         core = self.env.unwrapped
 
-        # unpack true angle from internal state:
+        # unpack state:
         x, x_dot, theta, theta_dot = core.state
 
-        # define the new reward to encourage bounding theta between -0.1 and 0.1 rad:
-        reward = 1.0 if abs(theta) < 0.1 else 0.0
+        # reward_theta is 1 when theta is 0 or 2pi, 0 if between 90 and 270:
+        reward_theta = max(0, np.cos(theta))
+
+        # reward_x is 0 when cart is at the edge of the screen, 1 when it's in the center:
+        reward_x = np.cos((x / core.x_threshold) * (np.pi / 2.0))
+
+        # reward between [0, 1]:
+        reward = reward_theta * reward_x
 
         # override the termination:
         terminated = bool(abs(x) > core.x_threshold)
@@ -73,4 +77,3 @@ class SwingUpWrapper(gym.Wrapper):
 
         # return:
         return obs, reward, terminated, truncated, info
-        
