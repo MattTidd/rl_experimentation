@@ -21,8 +21,9 @@ class SwingUpWrapper(gym.Wrapper):
 
         # set bounds:
         x_thresh = core.x_threshold
-        low  = np.array([-x_thresh, -np.inf, -np.pi, -np.inf], dtype=np.float32)
-        high = np.array([ x_thresh,  np.inf,  np.pi,  np.inf], dtype=np.float32)
+        inf = np.finfo(np.float32).max
+        low  = np.array([-x_thresh, -inf, -np.pi, -inf], dtype=np.float32)
+        high = np.array([ x_thresh,  inf,  np.pi,  inf], dtype=np.float32)
         self.observation_space = spaces.Box(low, high, dtype=np.float32)
 
     # redefine the reset function:
@@ -30,9 +31,16 @@ class SwingUpWrapper(gym.Wrapper):
         # reset the TimeLimit wrapped env:
         obs, info = self.env.reset(seed = seed, options = options)
 
-        # force pendulum downwards on the "raw" CartPoleEnv:
-        core = self.env.unwrapped   # unwrap the TimeLimit wrapper into CartPoleEnv
-        x, x_dot, theta, theta_dot = np.array([0, 0, np.pi, 0]) + core.np_random.normal(0, 0.1, size = 4)
+        # unwrap the TimeLimit wrapper into CartPoleEnv:
+        core = self.env.unwrapped
+        
+        if core.np_random.uniform() < 0.25:
+            # ocassionally start the cart upright:
+            x, x_dot, theta, theta_dot = np.array([0, 0, 0, 0]) + core.np_random.normal(0, 0.1, size = 4)
+        else:
+            # force pendulum downwards:
+            core = self.env.unwrapped 
+            x, x_dot, theta, theta_dot = np.array([0, 0, np.pi, 0]) + core.np_random.normal(0, 0.1, size = 4)
 
         # set the state:
         core.state = (x, x_dot, theta, theta_dot)
@@ -52,15 +60,17 @@ class SwingUpWrapper(gym.Wrapper):
         core = self.env.unwrapped
 
         # unpack true angle from internal state:
-        theta = core.state[2]
+        x, x_dot, theta, theta_dot = core.state
 
-        # define the new reward = cos(theta) (maximize upright)
-        reward = 1 + np.cos(theta)
+        # define the new reward to encourage bounding theta between -0.1 and 0.1 rad:
+        reward = 1.0 if abs(theta) < 0.1 else 0.0
+
+        # override the termination:
+        terminated = bool(abs(x) > core.x_threshold)
 
         # ensure datatype:
         obs = np.array(obs, dtype = np.float32)
 
         # return:
         return obs, reward, terminated, truncated, info
-
         
