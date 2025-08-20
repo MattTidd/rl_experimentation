@@ -4,3 +4,4 @@ testing.ipynb
 __pycache__/
 optuna_results.db
 optuna_results.db-journal
+*_sweep.ipynb
